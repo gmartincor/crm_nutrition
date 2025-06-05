@@ -1,0 +1,4 @@
+# This file points to development requirements by default
+# For production, use: pip install -r requirements/production.txt
+
+-r requirements/development.txt

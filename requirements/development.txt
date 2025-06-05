@@ -1,0 +1,6 @@
+-r base.txt
+
+# Development-only dependencies
+django-debug-toolbar==4.2.0
+pytest-django==4.8.0
+django-extensions==3.2.3

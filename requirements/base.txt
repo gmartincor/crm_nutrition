@@ -1,0 +1,9 @@
+Django==4.2.22
+psycopg2-binary==2.9.10
+django-sass-processor==1.4.1
+django-compressor==4.5.1
+libsass==0.23.0
+django-appconf==1.1.0
+asgiref==3.8.1
+sqlparse==0.5.3
+typing_extensions==4.14.0
