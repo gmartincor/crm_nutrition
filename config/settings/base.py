@@ -29,7 +29,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'sass_processor',
     'compressor',
-    ]
+]
 
 LOCAL_APPS = [
     # Aquí irán las apps del CRM
@@ -127,11 +127,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email configuration
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
-
-# Login/Logout URLs (para el sistema de autenticación)
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
-
-# Security settings for accounting system
-SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
