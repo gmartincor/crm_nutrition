@@ -32,7 +32,10 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    # Aquí irán las apps del CRM
+    # Apps del CRM - Orden de dependencias
+    'apps.common',
+    'apps.business_lines',
+    'apps.accounting',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
