@@ -2,17 +2,60 @@
 Base settings for CRM Nutrición project.
 """
 
+import os
 from pathlib import Path
-from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+# Sistema híbrido para variables de entorno (desarrollo + producción)
+def load_env_file():
+    """Carga variables del archivo .env si existe (desarrollo)"""
+    env_vars = {}
+    env_file = BASE_DIR / '.env'
+    
+    if env_file.exists():
+        with open(env_file, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    key, value = line.split('=', 1)
+                    env_vars[key.strip()] = value.strip()
+    return env_vars
+
+# Cargar variables del .env (desarrollo)
+ENV_VARS = load_env_file()
+
+def get_env(key, default=None, cast=None):
+    """
+    Obtiene variable de entorno con prioridad:
+    1. Variables del sistema (producción)
+    2. Archivo .env (desarrollo)
+    3. Valor por defecto
+    """
+    # Primero buscar en variables del sistema (producción)
+    value = os.environ.get(key)
+    
+    # Si no existe, buscar en archivo .env (desarrollo)
+    if value is None:
+        value = ENV_VARS.get(key)
+    
+    # Si sigue sin existir, usar default
+    if value is None:
+        value = default
+    
+    # Aplicar casting si es necesario
+    if cast and value is not None:
+        if cast == bool:
+            return str(value).lower() in ('true', '1', 'yes', 'on')
+        return cast(value)
+    return value
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-key')
+SECRET_KEY = get_env('SECRET_KEY', default='django-insecure-change-this-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = get_env('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -74,11 +117,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME'),
-        'USER': config('DATABASE_USER'),
-        'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST', default='localhost'),
-        'PORT': config('DATABASE_PORT', default='5432'),
+        'NAME': get_env('DATABASE_NAME'),
+        'USER': get_env('DATABASE_USER'),
+        'PASSWORD': get_env('DATABASE_PASSWORD'),
+        'HOST': get_env('DATABASE_HOST', default='localhost'),
+        'PORT': get_env('DATABASE_PORT', default='5432'),
     }
 }
 
@@ -129,4 +172,4 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email configuration
-EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_BACKEND = get_env('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')

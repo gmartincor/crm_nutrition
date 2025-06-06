@@ -6,7 +6,7 @@ from .base import *
 
 # Security settings for production
 DEBUG = False
-ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com']  # Update with your actual domain
+ALLOWED_HOSTS = get_env('ALLOWED_HOSTS', default='').split(',') if get_env('ALLOWED_HOSTS') else []
 
 # Security middleware
 MIDDLEWARE = [
@@ -14,8 +14,8 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files
 ] + MIDDLEWARE
 
-# Database configuration (uses environment variables)
-# Already configured in base.py with decouple
+# Database ya está configurada en base.py con get_env()
+# Las variables se configuran en el servidor de producción
 
 # Static files for production
 COMPRESS_ENABLED = True
@@ -30,10 +30,10 @@ SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_SECONDS = 3600
 X_FRAME_OPTIONS = 'DENY'
 
-# HTTPS settings (enable when using HTTPS)
-# SECURE_SSL_REDIRECT = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+# HTTPS settings (habilitar cuando uses HTTPS)
+SECURE_SSL_REDIRECT = get_env('SECURE_SSL_REDIRECT', default=False, cast=bool)
+SESSION_COOKIE_SECURE = get_env('SESSION_COOKIE_SECURE', default=False, cast=bool)
+CSRF_COOKIE_SECURE = get_env('CSRF_COOKIE_SECURE', default=False, cast=bool)
 
 # Logging for production
 LOGGING = {
